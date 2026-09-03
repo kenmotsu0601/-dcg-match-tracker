@@ -1,13 +1,19 @@
-# DCG 戦績管理
+# DCG 戦績管理 v2
 
-ビルド不要です。
+ビルド不要の iPhone 向け PWA です。
 
 ## GitHub Pages で使う手順
+1. `index.html` / `manifest.json` / `sw.js` をリポジトリ直下へアップロードします。
+2. GitHub の Settings → Pages で `Deploy from a branch`、`main`、`/(root)` を選択します。
+3. 公開URLを iPhone の Safari で開き、共有 →「ホーム画面に追加」を選択します。
 
-1. このフォルダ内の `index.html` `manifest.json` `sw.js` をGitHubリポジトリへアップロードします。
-2. GitHubの `Settings` → `Pages` を開きます。
-3. `Deploy from a branch` を選び、対象ブランチの `/ (root)` を指定します。
-4. 表示されたGitHub PagesのURLをiPhoneのSafariで開きます。
-5. Safariの共有ボタン → `ホーム画面に追加` を選びます。
-
-データはiPhoneのブラウザ内 `localStorage` に保存されます。そのため、SafariのWebサイトデータ削除や端末移行ではデータが消える可能性があります。
+## 主な仕様
+- 環境ごとに自分・相手のデッキと戦績を分離
+- 最新環境を入力・戦績・履歴の対象として使用
+- 過去環境の戦績は折りたたみ表示
+- 先攻/後攻と勝敗を別々に選択してから登録
+- 戦績は「自分のデッキ別 / 全体戦績 / 対面別」を切替
+- 戦績の日付範囲フィルタ
+- 履歴は「総合 / 先攻 / 後攻」を切替、勝敗で色分け
+- 同一環境・同一区分内の同名デッキ重複を禁止
+- 旧版（dcgTrackerDataV1）のデータは初回起動時に「初期環境」として自動移行

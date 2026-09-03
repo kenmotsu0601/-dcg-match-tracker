@@ -8,14 +8,22 @@
   <title>DCG 戦績管理</title>
   <style>
     :root{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f5f7fb;color:#111827}
-    *{box-sizing:border-box} body{margin:0;padding-bottom:88px} header{position:sticky;top:0;background:#111827;color:white;padding:16px 18px;z-index:10} header h1{font-size:20px;margin:0}
-    main{padding:16px;max-width:760px;margin:auto}.card{background:white;border-radius:16px;padding:16px;margin-bottom:14px;box-shadow:0 4px 14px rgba(0,0,0,.06)}
-    h2{font-size:18px;margin:0 0 12px}.row{display:flex;gap:10px;flex-wrap:wrap}.field{flex:1;min-width:150px} label{display:block;font-size:13px;color:#4b5563;margin-bottom:6px}
-    select,input{width:100%;font-size:16px;padding:12px;border:1px solid #d1d5db;border-radius:12px;background:white}.grid4{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
-    button{border:0;border-radius:14px;padding:14px 12px;font-size:16px;font-weight:700}.win{background:#dcfce7}.loss{background:#fee2e2}.primary{background:#111827;color:white}.secondary{background:#e5e7eb}.danger{background:#fee2e2;color:#991b1b}
-    .tabs{position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid #e5e7eb;display:grid;grid-template-columns:repeat(4,1fr);z-index:20;padding-bottom:env(safe-area-inset-bottom)}
-    .tabs button{border-radius:0;background:white;font-size:13px;padding:13px 4px}.tabs button.active{background:#111827;color:white}.hidden{display:none}
-    table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:9px 6px;border-bottom:1px solid #e5e7eb;text-align:center}th:first-child,td:first-child{text-align:left}.muted{color:#6b7280;font-size:13px}.stat{font-size:24px;font-weight:800}.history-item{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:12px 0;border-bottom:1px solid #e5e7eb}.history-main{min-width:0}.history-title{font-weight:700}.history-sub{font-size:13px;color:#6b7280;margin-top:4px}.smallbtn{padding:8px 10px;font-size:13px}.notice{padding:10px 12px;border-radius:12px;background:#eff6ff;font-size:14px;margin-top:10px}
+    *{box-sizing:border-box} body{margin:0;padding-bottom:92px} button,select,input{font:inherit}
+    header{position:sticky;top:0;background:#111827;color:white;padding:14px 16px;z-index:10} header h1{font-size:20px;margin:0}
+    main{padding:14px;max-width:760px;margin:auto}.card{background:white;border-radius:16px;padding:15px;margin-bottom:14px;box-shadow:0 4px 14px rgba(0,0,0,.06)}
+    h2{font-size:18px;margin:0 0 12px} h3{font-size:16px;margin:14px 0 8px}.row{display:flex;gap:10px;flex-wrap:wrap}.field{flex:1;min-width:145px}
+    label{display:block;font-size:13px;color:#4b5563;margin-bottom:6px} select,input{width:100%;font-size:16px;padding:12px;border:1px solid #d1d5db;border-radius:12px;background:white}
+    button{border:0;border-radius:12px;padding:12px;font-size:15px;font-weight:700;cursor:pointer}.primary{background:#111827;color:white}.secondary{background:#e5e7eb}.danger{background:#fee2e2;color:#991b1b}.smallbtn{padding:8px 10px;font-size:13px}
+    .choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}.choice{background:#f3f4f6;border:2px solid transparent}.choice.selected{background:#dbeafe;border-color:#2563eb;color:#1e3a8a}.choice.win.selected{background:#dcfce7;border-color:#16a34a;color:#166534}.choice.loss.selected{background:#fee2e2;border-color:#dc2626;color:#991b1b}
+    .register{width:100%;margin-top:12px;padding:15px;font-size:17px}.register:disabled{opacity:.4}.notice{padding:10px 12px;border-radius:12px;background:#eff6ff;font-size:14px;margin-top:10px}.hidden{display:none!important}
+    .bottom-tabs{position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid #e5e7eb;display:grid;grid-template-columns:repeat(4,1fr);z-index:20;padding-bottom:env(safe-area-inset-bottom)}
+    .bottom-tabs button{border-radius:0;background:white;font-size:13px;padding:13px 4px}.bottom-tabs button.active{background:#111827;color:white}
+    .subtabs{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:6px;background:#f3f4f6;padding:5px;border-radius:12px;margin-bottom:12px}.subtabs button{padding:9px 5px;background:transparent;font-size:13px}.subtabs button.active{background:white;box-shadow:0 1px 5px rgba(0,0,0,.08)}
+    table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:9px 5px;border-bottom:1px solid #e5e7eb;text-align:center}th:first-child,td:first-child{text-align:left}.muted{color:#6b7280;font-size:13px}.section-note{font-size:13px;color:#6b7280;margin:-4px 0 10px}
+    details{border:1px solid #e5e7eb;border-radius:12px;margin:8px 0;background:#fff;overflow:hidden}summary{padding:12px;font-weight:700;cursor:pointer;list-style:none}summary::-webkit-details-marker{display:none}summary:after{content:'▼';float:right;font-size:11px;color:#6b7280}details[open]>summary:after{content:'▲'}.detail-body{padding:0 12px 12px}
+    .history-item{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:12px;border-radius:12px;margin:8px 0;border:1px solid #e5e7eb}.history-item.win-row{background:#f0fdf4;border-color:#bbf7d0}.history-item.loss-row{background:#fef2f2;border-color:#fecaca}.history-main{min-width:0}.history-title{font-weight:700}.history-sub{font-size:13px;color:#6b7280;margin-top:4px}.badge{display:inline-block;font-size:12px;font-weight:800;padding:3px 7px;border-radius:999px;margin-left:5px}.badge-win{background:#dcfce7;color:#166534}.badge-loss{background:#fee2e2;color:#991b1b}
+    .env-banner{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 12px;background:#eef2ff;border-radius:12px;margin-bottom:12px}.env-name{font-weight:800}.filters{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}.filters .wide{grid-column:1/-1}
+    .list-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #e5e7eb}.empty{padding:10px 0;color:#6b7280;font-size:13px}
   </style>
 </head>
 <body>
@@ -24,75 +32,212 @@
   <section id="screen-input">
     <div class="card">
       <h2>対戦入力</h2>
+      <div id="inputEnvBanner" class="env-banner"></div>
       <div class="row">
         <div class="field"><label>自分のデッキ</label><select id="myDeckSelect"></select></div>
         <div class="field"><label>相手のデッキ</label><select id="oppDeckSelect"></select></div>
       </div>
-      <div class="grid4">
-        <button class="win" data-turn="first" data-result="win">先攻 勝利</button>
-        <button class="loss" data-turn="first" data-result="loss">先攻 敗北</button>
-        <button class="win" data-turn="second" data-result="win">後攻 勝利</button>
-        <button class="loss" data-turn="second" data-result="loss">後攻 敗北</button>
+      <h3>先攻 / 後攻</h3>
+      <div class="choice-grid">
+        <button class="choice turn-choice" data-turn="first">先攻</button>
+        <button class="choice turn-choice" data-turn="second">後攻</button>
       </div>
+      <h3>勝敗</h3>
+      <div class="choice-grid">
+        <button class="choice win result-choice" data-result="win">勝利</button>
+        <button class="choice loss result-choice" data-result="loss">敗北</button>
+      </div>
+      <button id="registerBtn" class="primary register" disabled>対戦結果を登録</button>
       <button id="undoBtn" class="secondary" style="width:100%;margin-top:10px">直前の記録を取り消す</button>
       <div id="inputNotice" class="notice hidden"></div>
     </div>
   </section>
 
   <section id="screen-stats" class="hidden">
-    <div class="card"><h2>全体戦績</h2><div id="overallStats"></div></div>
-    <div class="card"><h2>自分のデッキ別</h2><div id="myDeckStats"></div></div>
-    <div class="card"><h2>対面別</h2><div id="matchupStats"></div></div>
+    <div class="card">
+      <h2>戦績</h2>
+      <div id="statsCurrentEnv"></div>
+      <div class="filters">
+        <div class="field"><label>開始日</label><input type="date" id="statsFrom"></div>
+        <div class="field"><label>終了日</label><input type="date" id="statsTo"></div>
+        <button id="clearDateFilter" class="secondary wide">日付指定を解除</button>
+      </div>
+      <div class="subtabs" id="statsTabs">
+        <button data-stat-tab="my" class="active">自分のデッキ別</button>
+        <button data-stat-tab="overall">全体戦績</button>
+        <button data-stat-tab="matchup">対面別</button>
+      </div>
+      <div id="statsContent"></div>
+    </div>
+    <div class="card" id="pastEnvCard">
+      <details id="pastEnvironments">
+        <summary>過去の環境</summary>
+        <div class="detail-body" id="pastEnvList"></div>
+      </details>
+    </div>
   </section>
 
   <section id="screen-history" class="hidden">
-    <div class="card"><h2>対戦履歴</h2><div id="historyList"></div></div>
+    <div class="card">
+      <h2>対戦履歴</h2>
+      <div class="subtabs" id="historyTabs">
+        <button data-history-tab="all" class="active">総合</button>
+        <button data-history-tab="first">先攻</button>
+        <button data-history-tab="second">後攻</button>
+      </div>
+      <div id="historyList"></div>
+    </div>
   </section>
 
   <section id="screen-decks" class="hidden">
     <div class="card">
-      <h2>自分のデッキ</h2>
-      <div class="row"><div class="field"><input id="myDeckName" placeholder="デッキ名" /></div><button id="addMyDeck" class="primary">追加</button></div>
-      <div id="myDeckList" style="margin-top:12px"></div>
+      <h2>環境</h2>
+      <div class="row">
+        <div class="field"><label>表示する環境</label><select id="environmentSelect"></select></div>
+      </div>
+      <div class="row" style="margin-top:10px">
+        <div class="field"><input id="environmentName" placeholder="例：パックB環境" /></div>
+        <button id="addEnvironment" class="primary">新しい環境を作成</button>
+      </div>
+      <p class="section-note">新しい環境を作成すると、その環境が最新環境になり、デッキは新規登録になります。過去の記録は保持されます。</p>
     </div>
     <div class="card">
-      <h2>相手のデッキ</h2>
-      <div class="row"><div class="field"><input id="oppDeckName" placeholder="デッキ名" /></div><button id="addOppDeck" class="primary">追加</button></div>
-      <div id="oppDeckList" style="margin-top:12px"></div>
+      <div class="subtabs" id="deckTabs">
+        <button data-deck-tab="my" class="active">自分のデッキ</button>
+        <button data-deck-tab="opp">相手のデッキ</button>
+      </div>
+      <div id="deckManageContent"></div>
     </div>
   </section>
 </main>
-<nav class="tabs">
+<nav class="bottom-tabs">
   <button data-screen="input" class="active">入力</button>
   <button data-screen="stats">戦績</button>
   <button data-screen="history">履歴</button>
   <button data-screen="decks">デッキ</button>
 </nav>
 <script>
-const KEY='dcgTrackerDataV1';
-let data=load();
-function load(){try{return JSON.parse(localStorage.getItem(KEY))||{myDecks:[],oppDecks:[],matches:[],lastMyDeckId:null}}catch{return{myDecks:[],oppDecks:[],matches:[],lastMyDeckId:null}}}
+const KEY='dcgTrackerDataV2';
+const OLD_KEY='dcgTrackerDataV1';
+const uid=()=>crypto.randomUUID?crypto.randomUUID():Date.now()+'-'+Math.random();
+const nowIso=()=>new Date().toISOString();
+let selectedTurn=null, selectedResult=null, statsTab='my', historyTab='all', deckTab='my';
+
+function migrateOrLoad(){
+  try{const v2=JSON.parse(localStorage.getItem(KEY));if(v2&&Array.isArray(v2.environments))return normalize(v2)}catch{}
+  try{
+    const old=JSON.parse(localStorage.getItem(OLD_KEY));
+    if(old&&(old.myDecks||old.oppDecks||old.matches)){
+      const envId=uid(), createdAt=nowIso();
+      const migrated={environments:[{id:envId,name:'初期環境',createdAt}],decks:[],matches:[],selectedEnvironmentId:envId};
+      (old.myDecks||[]).forEach(d=>migrated.decks.push({...d,environmentId:envId,side:'my',createdAt:d.createdAt||createdAt}));
+      (old.oppDecks||[]).forEach(d=>migrated.decks.push({...d,environmentId:envId,side:'opp',createdAt:d.createdAt||createdAt}));
+      (old.matches||[]).forEach(m=>migrated.matches.push({...m,environmentId:envId}));
+      localStorage.setItem(KEY,JSON.stringify(migrated));return normalize(migrated);
+    }
+  }catch{}
+  const envId=uid();return {environments:[{id:envId,name:'現在の環境',createdAt:nowIso()}],decks:[],matches:[],selectedEnvironmentId:envId};
+}
+function normalize(d){d.environments=d.environments||[];d.decks=d.decks||[];d.matches=d.matches||[];if(!d.environments.length){const e={id:uid(),name:'現在の環境',createdAt:nowIso()};d.environments=[e];d.selectedEnvironmentId=e.id}if(!d.selectedEnvironmentId||!d.environments.some(e=>e.id===d.selectedEnvironmentId))d.selectedEnvironmentId=latestEnv().id;return d}
+let data=migrateOrLoad();
 function save(){localStorage.setItem(KEY,JSON.stringify(data))}
-const id=()=>crypto.randomUUID?crypto.randomUUID():Date.now()+'-'+Math.random();
-function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
-function deckName(list,id){return list.find(d=>d.id===id)?.name||'削除済み'}
-function renderSelectors(){const my=document.getElementById('myDeckSelect'),opp=document.getElementById('oppDeckSelect');my.innerHTML=data.myDecks.length?data.myDecks.map(d=>`<option value="${d.id}">${esc(d.name)}</option>`).join(''):'<option value="">デッキを登録してください</option>';opp.innerHTML=data.oppDecks.length?data.oppDecks.map(d=>`<option value="${d.id}">${esc(d.name)}</option>`).join(''):'<option value="">デッキを登録してください</option>';if(data.lastMyDeckId&&data.myDecks.some(d=>d.id===data.lastMyDeckId))my.value=data.lastMyDeckId}
-function addDeck(kind){const input=document.getElementById(kind==='my'?'myDeckName':'oppDeckName');const name=input.value.trim();if(!name)return;const list=kind==='my'?data.myDecks:data.oppDecks;list.push({id:id(),name});input.value='';save();renderAll()}
-function removeDeck(kind,deckId){const list=kind==='my'?data.myDecks:data.oppDecks;const used=data.matches.some(m=>kind==='my'?m.myDeckId===deckId:m.oppDeckId===deckId);if(used&&!confirm('このデッキを使用した対戦履歴があります。履歴は残したままデッキ名だけ削除します。'))return;const i=list.findIndex(d=>d.id===deckId);if(i>=0)list.splice(i,1);save();renderAll()}
-function record(turn,result){const my=document.getElementById('myDeckSelect').value,opp=document.getElementById('oppDeckSelect').value;if(!my||!opp){notice('先に自分・相手のデッキを登録してください');return}data.matches.push({id:id(),playedAt:new Date().toISOString(),myDeckId:my,oppDeckId:opp,turn,result});data.lastMyDeckId=my;save();notice(`${turn==='first'?'先攻':'後攻'}・${result==='win'?'勝利':'敗北'}を記録しました`);renderAll()}
-function undo(){if(!data.matches.length){notice('取り消せる記録がありません');return}data.matches.pop();save();notice('直前の記録を取り消しました');renderAll()}
+function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function normName(s){return s.trim().replace(/\s+/g,' ').toLocaleLowerCase('ja-JP')}
+function latestEnv(){return [...data.environments].sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt))[0]}
+function currentEnv(){return data.environments.find(e=>e.id===data.selectedEnvironmentId)||latestEnv()}
+function envDecks(envId,side){return data.decks.filter(d=>d.environmentId===envId&&d.side===side)}
+function envMatches(envId){return data.matches.filter(m=>m.environmentId===envId)}
+function deckById(id){return data.decks.find(d=>d.id===id)}
+function deckName(id){return deckById(id)?.name||'削除済み'}
+function latestDefaultDeck(envId,side){
+  const decks=envDecks(envId,side); if(!decks.length)return null;
+  const latestAdded=[...decks].sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt))[0];
+  const relevant=[...envMatches(envId)].filter(m=>side==='my'?decks.some(d=>d.id===m.myDeckId):decks.some(d=>d.id===m.oppDeckId)).sort((a,b)=>new Date(b.playedAt)-new Date(a.playedAt))[0];
+  if(!relevant||new Date(latestAdded.createdAt)>new Date(relevant.playedAt))return latestAdded.id;
+  return side==='my'?relevant.myDeckId:relevant.oppDeckId;
+}
+function setLatestAsActive(){data.selectedEnvironmentId=latestEnv().id}
+
+function renderInput(){
+  const env=latestEnv();
+  document.getElementById('inputEnvBanner').innerHTML=`<span>記録先</span><span class="env-name">${esc(env.name)}</span>`;
+  const my=envDecks(env.id,'my'),opp=envDecks(env.id,'opp');
+  const mySel=document.getElementById('myDeckSelect'),oppSel=document.getElementById('oppDeckSelect');
+  mySel.innerHTML=my.length?my.map(d=>`<option value="${d.id}">${esc(d.name)}</option>`).join(''):'<option value="">デッキを登録してください</option>';
+  oppSel.innerHTML=opp.length?opp.map(d=>`<option value="${d.id}">${esc(d.name)}</option>`).join(''):'<option value="">デッキを登録してください</option>';
+  const md=latestDefaultDeck(env.id,'my'),od=latestDefaultDeck(env.id,'opp'); if(md)mySel.value=md;if(od)oppSel.value=od;
+  updateRegisterButton();
+}
+function updateRegisterButton(){const ok=document.getElementById('myDeckSelect').value&&document.getElementById('oppDeckSelect').value&&selectedTurn&&selectedResult;document.getElementById('registerBtn').disabled=!ok}
+function chooseTurn(v){selectedTurn=v;document.querySelectorAll('.turn-choice').forEach(b=>b.classList.toggle('selected',b.dataset.turn===v));updateRegisterButton()}
+function chooseResult(v){selectedResult=v;document.querySelectorAll('.result-choice').forEach(b=>b.classList.toggle('selected',b.dataset.result===v));updateRegisterButton()}
+function record(){
+  const env=latestEnv(),my=document.getElementById('myDeckSelect').value,opp=document.getElementById('oppDeckSelect').value;
+  if(!my||!opp||!selectedTurn||!selectedResult)return;
+  data.matches.push({id:uid(),environmentId:env.id,playedAt:nowIso(),myDeckId:my,oppDeckId:opp,turn:selectedTurn,result:selectedResult});save();
+  notice(`${selectedTurn==='first'?'先攻':'後攻'}・${selectedResult==='win'?'勝利':'敗北'}を記録しました`); selectedResult=null;document.querySelectorAll('.result-choice').forEach(b=>b.classList.remove('selected'));renderAll();
+}
+function undo(){const env=latestEnv();const ms=envMatches(env.id).sort((a,b)=>new Date(b.playedAt)-new Date(a.playedAt));if(!ms.length){notice('取り消せる記録がありません');return}data.matches=data.matches.filter(m=>m.id!==ms[0].id);save();notice('直前の記録を取り消しました');renderAll()}
 function notice(t){const n=document.getElementById('inputNotice');n.textContent=t;n.classList.remove('hidden');setTimeout(()=>n.classList.add('hidden'),1800)}
+
+function localDate(iso){const d=new Date(iso),y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');return `${y}-${m}-${day}`}
+function filteredMatches(envId){const from=document.getElementById('statsFrom').value,to=document.getElementById('statsTo').value;return envMatches(envId).filter(m=>{const d=localDate(m.playedAt);return(!from||d>=from)&&(!to||d<=to)})}
 function calc(ms){const wins=ms.filter(m=>m.result==='win').length,losses=ms.length-wins;return{wins,losses,total:ms.length,rate:ms.length?wins/ms.length*100:0}}
 function tableFor(ms){const rows=[['先攻',calc(ms.filter(m=>m.turn==='first'))],['後攻',calc(ms.filter(m=>m.turn==='second'))],['合計',calc(ms)]];return `<table><thead><tr><th>条件</th><th>勝敗</th><th>試合数</th><th>勝率</th></tr></thead><tbody>${rows.map(([l,s])=>`<tr><td>${l}</td><td>${s.wins}勝${s.losses}敗</td><td>${s.total}</td><td>${s.rate.toFixed(1)}%</td></tr>`).join('')}</tbody></table>`}
-function renderStats(){document.getElementById('overallStats').innerHTML=tableFor(data.matches);document.getElementById('myDeckStats').innerHTML=data.myDecks.length?data.myDecks.map(d=>`<div style="margin-bottom:18px"><strong>${esc(d.name)}</strong>${tableFor(data.matches.filter(m=>m.myDeckId===d.id))}</div>`).join(''):'<p class="muted">デッキがありません</p>';let blocks=[];for(const my of data.myDecks){const relevant=data.matches.filter(m=>m.myDeckId===my.id);if(!relevant.length)continue;for(const opp of data.oppDecks){const ms=relevant.filter(m=>m.oppDeckId===opp.id);if(!ms.length)continue;blocks.push(`<div style="margin-bottom:18px"><strong>${esc(my.name)} vs ${esc(opp.name)}</strong>${tableFor(ms)}</div>`)} }document.getElementById('matchupStats').innerHTML=blocks.length?blocks.join(''):'<p class="muted">対戦記録がありません</p>'}
-function renderHistory(){const list=document.getElementById('historyList');const ms=[...data.matches].reverse();list.innerHTML=ms.length?ms.map(m=>`<div class="history-item"><div class="history-main"><div class="history-title">${esc(deckName(data.myDecks,m.myDeckId))} vs ${esc(deckName(data.oppDecks,m.oppDeckId))}</div><div class="history-sub">${new Date(m.playedAt).toLocaleString('ja-JP')} ・ ${m.turn==='first'?'先攻':'後攻'} ・ ${m.result==='win'?'勝利':'敗北'}</div></div><button class="danger smallbtn" onclick="deleteMatch('${m.id}')">削除</button></div>`).join(''):'<p class="muted">まだ対戦記録がありません</p>'}
-window.deleteMatch=function(mid){data.matches=data.matches.filter(m=>m.id!==mid);save();renderAll()}
-function renderDeckLists(){document.getElementById('myDeckList').innerHTML=data.myDecks.length?data.myDecks.map(d=>`<div class="history-item"><span>${esc(d.name)}</span><button class="danger smallbtn" onclick="removeDeck('my','${d.id}')">削除</button></div>`).join(''):'<p class="muted">未登録</p>';document.getElementById('oppDeckList').innerHTML=data.oppDecks.length?data.oppDecks.map(d=>`<div class="history-item"><span>${esc(d.name)}</span><button class="danger smallbtn" onclick="removeDeck('opp','${d.id}')">削除</button></div>`).join(''):'<p class="muted">未登録</p>'}
+function deckAccordion(envId,ms,mode){
+  const decks=envDecks(envId,'my'); if(!decks.length)return '<p class="empty">自分のデッキがありません</p>';
+  return decks.map(d=>{
+    const own=ms.filter(m=>m.myDeckId===d.id); let body='';
+    if(mode==='my'||mode==='overall')body=tableFor(own);
+    if(mode==='matchup'){
+      const opps=envDecks(envId,'opp').map(o=>({o,ms:own.filter(m=>m.oppDeckId===o.id)})).filter(x=>x.ms.length);
+      body=opps.length?opps.map(x=>`<details><summary>${esc(x.o.name)} <span class="muted">(${x.ms.length}戦)</span></summary><div class="detail-body">${tableFor(x.ms)}</div></details>`).join(''):'<p class="empty">対戦記録がありません</p>';
+    }
+    return `<details><summary>${esc(d.name)} <span class="muted">(${own.length}戦)</span></summary><div class="detail-body">${body}</div></details>`;
+  }).join('');
+}
+function statsView(envId,mode,allowDateFilter=true){const ms=allowDateFilter?filteredMatches(envId):envMatches(envId);if(mode==='my')return deckAccordion(envId,ms,'my');if(mode==='overall')return `${tableFor(ms)}<h3>デッキ内訳</h3>${deckAccordion(envId,ms,'overall')}`;return deckAccordion(envId,ms,'matchup')}
+function renderStats(){
+  const latest=latestEnv(); document.getElementById('statsCurrentEnv').innerHTML=`<div class="env-banner"><span>最新の環境</span><span class="env-name">${esc(latest.name)}</span></div>`;
+  document.getElementById('statsContent').innerHTML=statsView(latest.id,statsTab,true);
+  const past=[...data.environments].filter(e=>e.id!==latest.id).sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+  const card=document.getElementById('pastEnvCard');card.classList.toggle('hidden',!past.length);
+  document.getElementById('pastEnvList').innerHTML=past.map(e=>`<details><summary>${esc(e.name)} <span class="muted">(${envMatches(e.id).length}戦)</span></summary><div class="detail-body"><div class="subtabs"><button class="active" onclick="renderPastTab('${e.id}','my',this)">デッキ別</button><button onclick="renderPastTab('${e.id}','overall',this)">全体</button><button onclick="renderPastTab('${e.id}','matchup',this)">対面別</button></div><div id="past-${e.id}">${statsView(e.id,'my',false)}</div></div></details>`).join('');
+}
+window.renderPastTab=function(envId,mode,btn){btn.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('past-'+envId).innerHTML=statsView(envId,mode,false)}
+
+function renderHistory(){
+  const env=latestEnv();let ms=[...envMatches(env.id)].sort((a,b)=>new Date(b.playedAt)-new Date(a.playedAt));if(historyTab!=='all')ms=ms.filter(m=>m.turn===historyTab);
+  document.getElementById('historyList').innerHTML=`<div class="env-banner"><span>最新の環境</span><span class="env-name">${esc(env.name)}</span></div>`+(ms.length?ms.map(m=>`<div class="history-item ${m.result==='win'?'win-row':'loss-row'}"><div class="history-main"><div class="history-title">${esc(deckName(m.myDeckId))} vs ${esc(deckName(m.oppDeckId))}<span class="badge ${m.result==='win'?'badge-win':'badge-loss'}">${m.result==='win'?'勝利':'敗北'}</span></div><div class="history-sub">${new Date(m.playedAt).toLocaleString('ja-JP')} ・ ${m.turn==='first'?'先攻':'後攻'}</div></div><button class="danger smallbtn" onclick="deleteMatch('${m.id}')">削除</button></div>`).join(''):'<p class="empty">該当する対戦記録がありません</p>');
+}
+window.deleteMatch=function(mid){if(!confirm('この対戦記録を削除しますか？'))return;data.matches=data.matches.filter(m=>m.id!==mid);save();renderAll()}
+
+function renderEnvironmentSelect(){const sel=document.getElementById('environmentSelect');const envs=[...data.environments].sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));sel.innerHTML=envs.map((e,i)=>`<option value="${e.id}">${esc(e.name)}${i===0?'（最新）':''}</option>`).join('');sel.value=currentEnv().id}
+function addEnvironment(){const input=document.getElementById('environmentName'),name=input.value.trim();if(!name)return;if(data.environments.some(e=>normName(e.name)===normName(name))){alert('同じ名前の環境は登録できません。');return}const e={id:uid(),name,createdAt:nowIso()};data.environments.push(e);data.selectedEnvironmentId=e.id;input.value='';save();renderAll()}
+function addDeck(side){const env=currentEnv();const input=document.getElementById('newDeckName');const name=input.value.trim();if(!name)return;const list=envDecks(env.id,side);if(list.some(d=>normName(d.name)===normName(name))){alert('この環境には同じ名前のデッキが既に登録されています。');return}data.decks.push({id:uid(),environmentId:env.id,side,name,createdAt:nowIso()});input.value='';save();renderAll()}
+function removeDeck(deckId){const d=deckById(deckId);if(!d)return;const used=data.matches.some(m=>m.myDeckId===deckId||m.oppDeckId===deckId);if(used&&!confirm('このデッキを使用した履歴があります。履歴は残したまま一覧から削除しますか？'))return;data.decks=data.decks.filter(x=>x.id!==deckId);save();renderAll()}
 window.removeDeck=removeDeck;
-function renderAll(){renderSelectors();renderStats();renderHistory();renderDeckLists()}
-document.querySelectorAll('[data-turn]').forEach(b=>b.addEventListener('click',()=>record(b.dataset.turn,b.dataset.result)));document.getElementById('undoBtn').onclick=undo;document.getElementById('addMyDeck').onclick=()=>addDeck('my');document.getElementById('addOppDeck').onclick=()=>addDeck('opp');
-document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('active'));b.classList.add('active');['input','stats','history','decks'].forEach(s=>document.getElementById('screen-'+s).classList.toggle('hidden',s!==b.dataset.screen));renderAll()});
-if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});renderAll();
+function renderDeckManage(){
+  const env=currentEnv(), list=envDecks(env.id,deckTab); const title=deckTab==='my'?'自分のデッキ':'相手のデッキ';
+  document.getElementById('deckManageContent').innerHTML=`<div class="env-banner"><span>編集中</span><span class="env-name">${esc(env.name)}</span></div><div class="row"><div class="field"><input id="newDeckName" placeholder="${title}名" /></div><button class="primary" onclick="addDeckPublic('${deckTab}')">追加</button></div><details style="margin-top:12px"><summary>登録済み ${title}（${list.length}件）</summary><div class="detail-body">${list.length?list.map(d=>`<div class="list-row"><span>${esc(d.name)}</span><button class="danger smallbtn" onclick="removeDeck('${d.id}')">削除</button></div>`).join(''):'<p class="empty">未登録</p>'}</div></details>`;
+}
+window.addDeckPublic=addDeck;
+
+function renderAll(){renderEnvironmentSelect();renderInput();renderStats();renderHistory();renderDeckManage()}
+
+document.querySelectorAll('.turn-choice').forEach(b=>b.onclick=()=>chooseTurn(b.dataset.turn));
+document.querySelectorAll('.result-choice').forEach(b=>b.onclick=()=>chooseResult(b.dataset.result));
+document.getElementById('myDeckSelect').onchange=updateRegisterButton;document.getElementById('oppDeckSelect').onchange=updateRegisterButton;
+document.getElementById('registerBtn').onclick=record;document.getElementById('undoBtn').onclick=undo;
+document.getElementById('addEnvironment').onclick=addEnvironment;
+document.getElementById('environmentSelect').onchange=e=>{data.selectedEnvironmentId=e.target.value;save();renderDeckManage()};
+document.getElementById('statsFrom').onchange=renderStats;document.getElementById('statsTo').onchange=renderStats;document.getElementById('clearDateFilter').onclick=()=>{document.getElementById('statsFrom').value='';document.getElementById('statsTo').value='';renderStats()};
+document.querySelectorAll('#statsTabs button').forEach(b=>b.onclick=()=>{statsTab=b.dataset.statTab;document.querySelectorAll('#statsTabs button').forEach(x=>x.classList.toggle('active',x===b));renderStats()});
+document.querySelectorAll('#historyTabs button').forEach(b=>b.onclick=()=>{historyTab=b.dataset.historyTab;document.querySelectorAll('#historyTabs button').forEach(x=>x.classList.toggle('active',x===b));renderHistory()});
+document.querySelectorAll('#deckTabs button').forEach(b=>b.onclick=()=>{deckTab=b.dataset.deckTab;document.querySelectorAll('#deckTabs button').forEach(x=>x.classList.toggle('active',x===b));renderDeckManage()});
+document.querySelectorAll('.bottom-tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.bottom-tabs button').forEach(x=>x.classList.toggle('active',x===b));['input','stats','history','decks'].forEach(s=>document.getElementById('screen-'+s).classList.toggle('hidden',s!==b.dataset.screen));if(b.dataset.screen==='input')setLatestAsActive();renderAll()});
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+save();renderAll();
 </script>
 </body>
 </html>
