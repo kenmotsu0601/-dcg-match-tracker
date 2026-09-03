@@ -1,4 +1,4 @@
-# DCG 戦績管理 v3
+# DCG 戦績管理 v4
 
 ビルド不要の静的Webアプリです。`index.html`、`manifest.json`、`sw.js` をGitHub Pagesの公開対象ディレクトリに置いて使用します。
 
