@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#111827" />
+  <link rel="manifest" href="manifest.json" />
+  <title>DCG 戦績管理</title>
+  <style>
+    :root{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f5f7fb;color:#111827}
+    *{box-sizing:border-box} body{margin:0;padding-bottom:88px} header{position:sticky;top:0;background:#111827;color:white;padding:16px 18px;z-index:10} header h1{font-size:20px;margin:0}
+    main{padding:16px;max-width:760px;margin:auto}.card{background:white;border-radius:16px;padding:16px;margin-bottom:14px;box-shadow:0 4px 14px rgba(0,0,0,.06)}
+    h2{font-size:18px;margin:0 0 12px}.row{display:flex;gap:10px;flex-wrap:wrap}.field{flex:1;min-width:150px} label{display:block;font-size:13px;color:#4b5563;margin-bottom:6px}
+    select,input{width:100%;font-size:16px;padding:12px;border:1px solid #d1d5db;border-radius:12px;background:white}.grid4{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+    button{border:0;border-radius:14px;padding:14px 12px;font-size:16px;font-weight:700}.win{background:#dcfce7}.loss{background:#fee2e2}.primary{background:#111827;color:white}.secondary{background:#e5e7eb}.danger{background:#fee2e2;color:#991b1b}
+    .tabs{position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid #e5e7eb;display:grid;grid-template-columns:repeat(4,1fr);z-index:20;padding-bottom:env(safe-area-inset-bottom)}
+    .tabs button{border-radius:0;background:white;font-size:13px;padding:13px 4px}.tabs button.active{background:#111827;color:white}.hidden{display:none}
+    table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:9px 6px;border-bottom:1px solid #e5e7eb;text-align:center}th:first-child,td:first-child{text-align:left}.muted{color:#6b7280;font-size:13px}.stat{font-size:24px;font-weight:800}.history-item{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:12px 0;border-bottom:1px solid #e5e7eb}.history-main{min-width:0}.history-title{font-weight:700}.history-sub{font-size:13px;color:#6b7280;margin-top:4px}.smallbtn{padding:8px 10px;font-size:13px}.notice{padding:10px 12px;border-radius:12px;background:#eff6ff;font-size:14px;margin-top:10px}
+  </style>
+</head>
+<body>
+<header><h1>DCG 戦績管理</h1></header>
+<main>
+  <section id="screen-input">
+    <div class="card">
+      <h2>対戦入力</h2>
+      <div class="row">
+        <div class="field"><label>自分のデッキ</label><select id="myDeckSelect"></select></div>
+        <div class="field"><label>相手のデッキ</label><select id="oppDeckSelect"></select></div>
+      </div>
+      <div class="grid4">
+        <button class="win" data-turn="first" data-result="win">先攻 勝利</button>
+        <button class="loss" data-turn="first" data-result="loss">先攻 敗北</button>
+        <button class="win" data-turn="second" data-result="win">後攻 勝利</button>
+        <button class="loss" data-turn="second" data-result="loss">後攻 敗北</button>
+      </div>
+      <button id="undoBtn" class="secondary" style="width:100%;margin-top:10px">直前の記録を取り消す</button>
+      <div id="inputNotice" class="notice hidden"></div>
+    </div>
+  </section>
+
+  <section id="screen-stats" class="hidden">
+    <div class="card"><h2>全体戦績</h2><div id="overallStats"></div></div>
+    <div class="card"><h2>自分のデッキ別</h2><div id="myDeckStats"></div></div>
+    <div class="card"><h2>対面別</h2><div id="matchupStats"></div></div>
+  </section>
+
+  <section id="screen-history" class="hidden">
+    <div class="card"><h2>対戦履歴</h2><div id="historyList"></div></div>
+  </section>
+
+  <section id="screen-decks" class="hidden">
+    <div class="card">
+      <h2>自分のデッキ</h2>
+      <div class="row"><div class="field"><input id="myDeckName" placeholder="デッキ名" /></div><button id="addMyDeck" class="primary">追加</button></div>
+      <div id="myDeckList" style="margin-top:12px"></div>
+    </div>
+    <div class="card">
+      <h2>相手のデッキ</h2>
+      <div class="row"><div class="field"><input id="oppDeckName" placeholder="デッキ名" /></div><button id="addOppDeck" class="primary">追加</button></div>
+      <div id="oppDeckList" style="margin-top:12px"></div>
+    </div>
+  </section>
+</main>
+<nav class="tabs">
+  <button data-screen="input" class="active">入力</button>
+  <button data-screen="stats">戦績</button>
+  <button data-screen="history">履歴</button>
+  <button data-screen="decks">デッキ</button>
+</nav>
+<script>
+const KEY='dcgTrackerDataV1';
+let data=load();
+function load(){try{return JSON.parse(localStorage.getItem(KEY))||{myDecks:[],oppDecks:[],matches:[],lastMyDeckId:null}}catch{return{myDecks:[],oppDecks:[],matches:[],lastMyDeckId:null}}}
+function save(){localStorage.setItem(KEY,JSON.stringify(data))}
+const id=()=>crypto.randomUUID?crypto.randomUUID():Date.now()+'-'+Math.random();
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function deckName(list,id){return list.find(d=>d.id===id)?.name||'削除済み'}
+function renderSelectors(){const my=document.getElementById('myDeckSelect'),opp=document.getElementById('oppDeckSelect');my.innerHTML=data.myDecks.length?data.myDecks.map(d=>`<option value="${d.id}">${esc(d.name)}</option>`).join(''):'<option value="">デッキを登録してください</option>';opp.innerHTML=data.oppDecks.length?data.oppDecks.map(d=>`<option value="${d.id}">${esc(d.name)}</option>`).join(''):'<option value="">デッキを登録してください</option>';if(data.lastMyDeckId&&data.myDecks.some(d=>d.id===data.lastMyDeckId))my.value=data.lastMyDeckId}
+function addDeck(kind){const input=document.getElementById(kind==='my'?'myDeckName':'oppDeckName');const name=input.value.trim();if(!name)return;const list=kind==='my'?data.myDecks:data.oppDecks;list.push({id:id(),name});input.value='';save();renderAll()}
+function removeDeck(kind,deckId){const list=kind==='my'?data.myDecks:data.oppDecks;const used=data.matches.some(m=>kind==='my'?m.myDeckId===deckId:m.oppDeckId===deckId);if(used&&!confirm('このデッキを使用した対戦履歴があります。履歴は残したままデッキ名だけ削除します。'))return;const i=list.findIndex(d=>d.id===deckId);if(i>=0)list.splice(i,1);save();renderAll()}
+function record(turn,result){const my=document.getElementById('myDeckSelect').value,opp=document.getElementById('oppDeckSelect').value;if(!my||!opp){notice('先に自分・相手のデッキを登録してください');return}data.matches.push({id:id(),playedAt:new Date().toISOString(),myDeckId:my,oppDeckId:opp,turn,result});data.lastMyDeckId=my;save();notice(`${turn==='first'?'先攻':'後攻'}・${result==='win'?'勝利':'敗北'}を記録しました`);renderAll()}
+function undo(){if(!data.matches.length){notice('取り消せる記録がありません');return}data.matches.pop();save();notice('直前の記録を取り消しました');renderAll()}
+function notice(t){const n=document.getElementById('inputNotice');n.textContent=t;n.classList.remove('hidden');setTimeout(()=>n.classList.add('hidden'),1800)}
+function calc(ms){const wins=ms.filter(m=>m.result==='win').length,losses=ms.length-wins;return{wins,losses,total:ms.length,rate:ms.length?wins/ms.length*100:0}}
+function tableFor(ms){const rows=[['先攻',calc(ms.filter(m=>m.turn==='first'))],['後攻',calc(ms.filter(m=>m.turn==='second'))],['合計',calc(ms)]];return `<table><thead><tr><th>条件</th><th>勝敗</th><th>試合数</th><th>勝率</th></tr></thead><tbody>${rows.map(([l,s])=>`<tr><td>${l}</td><td>${s.wins}勝${s.losses}敗</td><td>${s.total}</td><td>${s.rate.toFixed(1)}%</td></tr>`).join('')}</tbody></table>`}
+function renderStats(){document.getElementById('overallStats').innerHTML=tableFor(data.matches);document.getElementById('myDeckStats').innerHTML=data.myDecks.length?data.myDecks.map(d=>`<div style="margin-bottom:18px"><strong>${esc(d.name)}</strong>${tableFor(data.matches.filter(m=>m.myDeckId===d.id))}</div>`).join(''):'<p class="muted">デッキがありません</p>';let blocks=[];for(const my of data.myDecks){const relevant=data.matches.filter(m=>m.myDeckId===my.id);if(!relevant.length)continue;for(const opp of data.oppDecks){const ms=relevant.filter(m=>m.oppDeckId===opp.id);if(!ms.length)continue;blocks.push(`<div style="margin-bottom:18px"><strong>${esc(my.name)} vs ${esc(opp.name)}</strong>${tableFor(ms)}</div>`)} }document.getElementById('matchupStats').innerHTML=blocks.length?blocks.join(''):'<p class="muted">対戦記録がありません</p>'}
+function renderHistory(){const list=document.getElementById('historyList');const ms=[...data.matches].reverse();list.innerHTML=ms.length?ms.map(m=>`<div class="history-item"><div class="history-main"><div class="history-title">${esc(deckName(data.myDecks,m.myDeckId))} vs ${esc(deckName(data.oppDecks,m.oppDeckId))}</div><div class="history-sub">${new Date(m.playedAt).toLocaleString('ja-JP')} ・ ${m.turn==='first'?'先攻':'後攻'} ・ ${m.result==='win'?'勝利':'敗北'}</div></div><button class="danger smallbtn" onclick="deleteMatch('${m.id}')">削除</button></div>`).join(''):'<p class="muted">まだ対戦記録がありません</p>'}
+window.deleteMatch=function(mid){data.matches=data.matches.filter(m=>m.id!==mid);save();renderAll()}
+function renderDeckLists(){document.getElementById('myDeckList').innerHTML=data.myDecks.length?data.myDecks.map(d=>`<div class="history-item"><span>${esc(d.name)}</span><button class="danger smallbtn" onclick="removeDeck('my','${d.id}')">削除</button></div>`).join(''):'<p class="muted">未登録</p>';document.getElementById('oppDeckList').innerHTML=data.oppDecks.length?data.oppDecks.map(d=>`<div class="history-item"><span>${esc(d.name)}</span><button class="danger smallbtn" onclick="removeDeck('opp','${d.id}')">削除</button></div>`).join(''):'<p class="muted">未登録</p>'}
+window.removeDeck=removeDeck;
+function renderAll(){renderSelectors();renderStats();renderHistory();renderDeckLists()}
+document.querySelectorAll('[data-turn]').forEach(b=>b.addEventListener('click',()=>record(b.dataset.turn,b.dataset.result)));document.getElementById('undoBtn').onclick=undo;document.getElementById('addMyDeck').onclick=()=>addDeck('my');document.getElementById('addOppDeck').onclick=()=>addDeck('opp');
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('active'));b.classList.add('active');['input','stats','history','decks'].forEach(s=>document.getElementById('screen-'+s).classList.toggle('hidden',s!==b.dataset.screen));renderAll()});
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});renderAll();
+</script>
+</body>
+</html>
